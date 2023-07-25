@@ -2,6 +2,8 @@
 const table = () =>{
     return{
         type : "CREATE_USER",
-        payload : {}
+        payload : " "
     }
 }
+
+export default table;

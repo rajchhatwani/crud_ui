@@ -17,6 +17,7 @@ import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import InputData from './form';
 import { useSelector, useDispatch } from 'react-redux';
+// import table from "./Actions/actions"
 
 const style = {
     position: 'absolute',
@@ -30,7 +31,6 @@ const style = {
     p: 0,
 };
 
-
 export default function AccessibleTable() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
@@ -40,13 +40,17 @@ export default function AccessibleTable() {
     const handleClose = () => setOpen(false);
     const [form_data, setForm_data] = React.useState([]);
     const [defaultValue, setDefaultValue] = React.useState('');
-    const createUser = useSelector((state)=>state);
-    const targetActions = useDispatch();
+    const createUser = useSelector((state) => state);
+    const Dispatch = useDispatch();
+    console.log(createUser.userOperation.data)
+
+
+
     const got = async (values) => {
-        if(values._id){
+        if (values._id) {
             const updating = await axios.put(`http://localhost:8080/update`, values)
-            let updateData = form_data.map((data)=>{
-                if(updating.data.data._id === data._id){
+            let updateData = form_data.map((data) => {
+                if (updating.data.data._id === data._id) {
                     return updating.data.data;
                 }
                 else {
@@ -56,22 +60,22 @@ export default function AccessibleTable() {
             setForm_data(updateData)
             return
         }
-        else{
+        else {
             const response = await axios.post('http://localhost:8080/addUser', values);
             console.log(response)
             setForm_data([...form_data, response.data.data]);
         }
-        
+
     }
 
     React.useEffect(() => {
         async function callApi() {
             let response = await axios.get('http://localhost:8080/get');
             setForm_data(response.data.data);
-            targetActions({type: "CREATE_USER", payload : response.data.data });
+            Dispatch({ type: "CREATE_USER", payload: response.data.data });
         }
         callApi()
-    }, [])
+    }, [Dispatch])
 
     const onDelete = async (perData) => {
         const response = await axios.delete(`http://localhost:8080/delete?id=${perData}`);
@@ -79,13 +83,12 @@ export default function AccessibleTable() {
             setForm_data(form_data.filter((e) => {
                 console.log(response.status === 200);
                 return e._id !== perData
-
             }))
         }
     }
 
-    const onEdit = async(perData)=>{
-        
+    const onEdit = async (perData) => {
+
         console.log(perData._id);
         setDefaultValue(perData);
         setOpen(true);
@@ -104,7 +107,7 @@ export default function AccessibleTable() {
                 >
                     <Box sx={style}>
                         <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                            <InputData got={got} userData = {defaultValue} />
+                            <InputData got={got} userData={defaultValue} />
                         </Typography>
                     </Box>
                 </Modal>
@@ -122,12 +125,12 @@ export default function AccessibleTable() {
                             </TableRow>
                         </TableHead>
                         <TableBody className='secondary-container' >
-                            {createUser.map((e) => (
+                            {Object.entries(createUser.userOperation.data).map((e) => (
                                 <TableRow >
                                     <TableCell component="th" scope="row">{e.name}</TableCell>
                                     <TableCell align="left">{e.contact}</TableCell>
                                     <TableCell align="left">{e.email}</TableCell>
-                                    <TableCell> <IconButton onClick={()=> onEdit(e)} > <EditIcon /></IconButton></TableCell>
+                                    <TableCell> <IconButton onClick={() => onEdit(e)} > <EditIcon /></IconButton></TableCell>
                                     <TableCell> <IconButton onClick={() => onDelete(e._id)}> <DeleteIcon /> </IconButton> </TableCell>
                                 </TableRow>
                             ))}

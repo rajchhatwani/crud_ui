@@ -1,12 +1,14 @@
 
-const userOperations = (createUser = {}, action) => {
+const userOperations = (createUser = { }, action) => {
+    // debugger
+    console.log(action);
+    console.log(createUser)
     switch (action.type) {
         case 'CREATE_USER':
-            return (createUser)
+            return ({...createUser, data: action.payload })
         default:
-            return " okay "
+            return createUser
     }
-
 }
 
 export default userOperations;
