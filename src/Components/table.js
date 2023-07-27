@@ -17,7 +17,7 @@ import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import InputData from './form';
 import { useSelector, useDispatch } from 'react-redux';
-// import table from "./Actions/actions"
+import {table} from "./Actions/actions"
 
 const style = {
     position: 'absolute',
@@ -40,11 +40,18 @@ export default function AccessibleTable() {
     const handleClose = () => setOpen(false);
     const [form_data, setForm_data] = React.useState([]);
     const [defaultValue, setDefaultValue] = React.useState('');
+    const [wait, setWait] = React.useState([]);
     const createUser = useSelector((state) => state);
     const Dispatch = useDispatch();
-    console.log(createUser.userOperation.data)
+    console.log(createUser)
+    // async function metaData() {
 
+    // }
+    // metaData();
+    // console.log(wait)
 
+    // let response1 = createUser.userOperation.data
+    // setWait(response1)
 
     const got = async (values) => {
         if (values._id) {
@@ -72,7 +79,8 @@ export default function AccessibleTable() {
         async function callApi() {
             let response = await axios.get('http://localhost:8080/get');
             setForm_data(response.data.data);
-            Dispatch({ type: "CREATE_USER", payload: response.data.data });
+            // Dispatch(table(), {  payload: response.data.data });
+            Dispatch( {type: "CREATE_USER", payload: response.data.data });
         }
         callApi()
     }, [Dispatch])
@@ -125,7 +133,7 @@ export default function AccessibleTable() {
                             </TableRow>
                         </TableHead>
                         <TableBody className='secondary-container' >
-                            {Object.entries(createUser.userOperation.data).map((e) => (
+                            {form_data.map((e) => (
                                 <TableRow >
                                     <TableCell component="th" scope="row">{e.name}</TableCell>
                                     <TableCell align="left">{e.contact}</TableCell>

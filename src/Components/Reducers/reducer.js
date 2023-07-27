@@ -1,5 +1,5 @@
 
-const userOperations = (createUser = { }, action) => {
+const userOperations = (createUser = [ ], action) => {
     // debugger
     console.log(action);
     console.log(createUser)
